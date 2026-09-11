@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+venv/
+.venv/
+env/
+__pycache__/
+*/__pycache__/
+*/*/__pycache__/
+*.py[cod]
+*$py.class
+
+# Testing & Cache
+.pytest_cache/
+*/.pytest_cache/
+.coverage
+htmlcov/
+
+# Production builds
+frontend/dist/
+dist/
+dist-ssr/
+build/
+
+# Local database & state
+*.db
+*.sqlite
+*.sqlite3
+backend/hvac_designer.db
+
+# Storage / Uploads
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
+
+# IDE & OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+*.log
+npm-debug.log*
+yarn-debug.log*
