@@ -15,6 +15,7 @@ from app.services.storage_service import storage_service
 from app.services.pdf_service import pdf_service
 from app.services.geometry_service import geometry_service
 from app.services.cross_section import cross_section_service
+from app.services.ai_reconstruction_service import ai_reconstruction_service
 from app.services.sample_pdf import sample_pdf_generator
 from app.utils.unit_converter import parse_imperial_to_feet, format_feet_to_imperial
 from app.config import settings
@@ -168,3 +169,15 @@ async def analyze_cross_section(project_id: str, drawing_id: str = None, db: Asy
 
     analysis = cross_section_service.analyze_cross_section_document(Path(drawing.stored_path))
     return analysis
+
+@router.post("/ai-reconstruct")
+async def ai_reconstruct_floorplan(
+    project_id: str,
+    drawing_id: str = None,
+    confidence_threshold: float = 0.8,
+    db: AsyncSession = Depends(get_db)
+):
+    geom = await process_floorplan(project_id=project_id, drawing_id=drawing_id, db=db)
+    raw_dict = geom.model_dump() if hasattr(geom, 'model_dump') else dict(geom)
+    reconstructed = ai_reconstruction_service.reconstruct_floorplan_from_pdf(raw_dict, confidence_threshold)
+    return reconstructed

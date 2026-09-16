@@ -9,6 +9,7 @@ from app.schemas.hvac import (
     ControlAssociationCreate, ControlAssociationResponse,
     HVACSystemCreate, HVACSystemResponse
 )
+from app.services.ddc_simulation_service import ddc_simulation_service
 
 router = APIRouter(prefix="/projects/{project_id}", tags=["controls"])
 
@@ -47,3 +48,16 @@ async def delete_control_association(control_id: str, db: AsyncSession = Depends
     await db.delete(ctrl)
     await db.commit()
     return {"status": "deleted", "id": control_id}
+
+@router.get("/simulate-ddc")
+async def simulate_ddc_loop(
+    project_id: str,
+    room_temp: float = 74.5,
+    setpoint: float = 72.0,
+    damper_pct: float = 40.0
+):
+    return ddc_simulation_service.run_thermal_pid_step(
+        room_temp=room_temp,
+        setpoint=setpoint,
+        current_damper_pct=damper_pct
+    )

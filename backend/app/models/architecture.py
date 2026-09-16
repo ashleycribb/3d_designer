@@ -93,3 +93,16 @@ class Window(Base):
 
     project = relationship("Project", back_populates="windows")
     wall = relationship("Wall", back_populates="windows")
+
+class Floor(Base):
+    __tablename__ = "floors"
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_id = Column(String(36), ForeignKey("projects.id", ondelete="CASCADE"), nullable=False)
+    name = Column(String(100), nullable=False)
+    floor_number = Column(Float, default=1.0)
+    elevation_ft = Column(Float, default=0.0)
+    height_ft = Column(Float, default=12.0)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    project = relationship("Project", back_populates="floors")

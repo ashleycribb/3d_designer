@@ -2,7 +2,7 @@ import React from 'react';
 import { 
   Building2, Save, Plus, Undo2, Redo2, 
   Ruler, Eye, Layers, Box, Cpu, Sparkles, Upload, MousePointer, Edit3, ChevronDown,
-  Columns, Scissors
+  Columns, Scissors, Download
 } from 'lucide-react';
 import { useProject } from '../../context/ProjectContext';
 import { ViewMode, VisibilityMode, CameraPreset, ActiveTool } from '../../types/view';
@@ -248,6 +248,19 @@ export const Header: React.FC = () => {
             <Redo2 size={13} />
           </button>
         </div>
+
+        <button
+          className="spline-btn-ghost text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/10"
+          title="Export openBIM IFC4 3D Model"
+          onClick={() => {
+            if (activeProject) {
+              window.open(`/api/projects/${activeProject.id}/export/ifc`, '_blank');
+            }
+          }}
+        >
+          <Download size={13} />
+          <span>IFC</span>
+        </button>
 
         <button 
           className="spline-btn-save" 

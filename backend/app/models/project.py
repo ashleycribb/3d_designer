@@ -21,6 +21,7 @@ class Project(Base):
     settings = relationship("ProjectSettings", back_populates="project", uselist=False, cascade="all, delete-orphan")
     vertical_config = relationship("VerticalConfig", back_populates="project", uselist=False, cascade="all, delete-orphan")
     drawings = relationship("Drawing", back_populates="project", cascade="all, delete-orphan")
+    floors = relationship("Floor", back_populates="project", cascade="all, delete-orphan")
     walls = relationship("Wall", back_populates="project", cascade="all, delete-orphan")
     rooms = relationship("Room", back_populates="project", cascade="all, delete-orphan")
     doors = relationship("Door", back_populates="project", cascade="all, delete-orphan")

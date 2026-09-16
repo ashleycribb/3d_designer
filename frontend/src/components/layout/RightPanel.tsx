@@ -592,7 +592,7 @@ export const RightPanel: React.FC = () => {
           </div>
         )}
 
-        {/* Default: Project Overview */}
+        {/* Default: Project Overview & Air Balance Summary */}
         {selectedType === null && (
           <div className="inspector-section">
             <div className="overview-card">
@@ -604,6 +604,28 @@ export const RightPanel: React.FC = () => {
               <p className="text-xs text-slate-400 mt-2 leading-relaxed">
                 {activeProject?.description || 'Select any wall or HVAC equipment in the workspace to view and edit properties.'}
               </p>
+            </div>
+
+            <div className="property-section-title">CFM Airflow Balance Summary</div>
+            <div className="bg-slate-900/80 p-3 rounded-md border border-slate-700/60 mb-3 space-y-2">
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-slate-400">Total Placed Diffusers:</span>
+                <span className="font-mono text-cyan-300 font-bold">
+                  {equipment.filter(e => e.type_name.toLowerCase().includes('diffuser') || e.type_name.toLowerCase().includes('supply')).length} Units
+                </span>
+              </div>
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-slate-400">Total Supply CFM:</span>
+                <span className="font-mono text-emerald-300 font-bold">
+                  {equipment.filter(e => e.type_name.toLowerCase().includes('diffuser') || e.type_name.toLowerCase().includes('supply')).reduce((s, e) => s + (e.airflow_max || 150), 0)} CFM
+                </span>
+              </div>
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-slate-400">Total Return CFM:</span>
+                <span className="font-mono text-purple-300 font-bold">
+                  {equipment.filter(e => e.type_name.toLowerCase().includes('return') || e.type_name.toLowerCase().includes('grille')).reduce((s, e) => s + (e.airflow_max || 150), 0)} CFM
+                </span>
+              </div>
             </div>
 
             <div className="property-section-title">Building Vertical Profile</div>

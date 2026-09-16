@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Cpu, Wind, Thermometer, Plus, Trash2, ArrowRight } from 'lucide-react';
+import { Cpu, Wind, Thermometer, Plus, Trash2, ArrowRight, Play, Pause, RefreshCw } from 'lucide-react';
 import { useProject } from '../../context/ProjectContext';
 import { api } from '../../api/client';
 
@@ -16,6 +16,25 @@ export const ControlsGraphView: React.FC = () => {
   const [associatedId, setAssociatedId] = useState<string>('');
   const [relType, setRelType] = useState<string>('CONTROLS');
   const [desc, setDesc] = useState<string>('');
+
+  // DDC Simulation Engine State
+  const [isSimulating, setIsSimulating] = useState<boolean>(false);
+  const [simData, setSimData] = useState<{ room_temperature_f: number; vav_damper_percent: number; vav_airflow_cfm: number; ahu_fan_speed_hz: number } | null>(null);
+
+  const toggleSimulation = async () => {
+    if (!isSimulating && activeProject) {
+      setIsSimulating(true);
+      try {
+        const res = await fetch(`/api/projects/${activeProject.id}/simulate-ddc?room_temp=75.2&setpoint=72.0&damper_pct=45.0`);
+        const json = await res.json();
+        setSimData(json);
+      } catch (err) {
+        console.error('DDC simulation failed', err);
+      }
+    } else {
+      setIsSimulating(false);
+    }
+  };
 
   const handleAddControl = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,6 +121,42 @@ export const ControlsGraphView: React.FC = () => {
             Link Controls
           </button>
         </form>
+      </div>
+
+      {/* DDC Interactive Telemetry Simulation Bar */}
+      <div className="bg-slate-900 border border-slate-700/80 rounded-lg p-3 my-3 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold ${isSimulating ? 'bg-amber-600 text-white' : 'bg-emerald-600 text-white'}`}
+            onClick={toggleSimulation}
+          >
+            {isSimulating ? <Pause size={13} /> : <Play size={13} />}
+            <span>{isSimulating ? 'Pause DDC Simulation' : 'Run Live DDC Loop'}</span>
+          </button>
+          <span className="text-xs text-slate-400">Sequence-of-Operations Logic Engine</span>
+        </div>
+
+        {simData && (
+          <div className="flex items-center gap-4 text-xs font-mono">
+            <div>
+              <span className="text-slate-400 mr-1">Room Temp:</span>
+              <span className="text-amber-300 font-bold">{simData.room_temperature_f}°F</span>
+            </div>
+            <div>
+              <span className="text-slate-400 mr-1">Damper:</span>
+              <span className="text-cyan-300 font-bold">{simData.vav_damper_percent}%</span>
+            </div>
+            <div>
+              <span className="text-slate-400 mr-1">Airflow:</span>
+              <span className="text-emerald-300 font-bold">{simData.vav_airflow_cfm} CFM</span>
+            </div>
+            <div>
+              <span className="text-slate-400 mr-1">AHU Fan:</span>
+              <span className="text-purple-300 font-bold">{simData.ahu_fan_speed_hz} Hz</span>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="controls-grid">

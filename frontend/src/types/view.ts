@@ -5,7 +5,8 @@ export type VisibilityMode =
   | 'CEILING_OFF'  // Ceiling hidden, plenum area exposed
   | 'XRAY'         // Walls semi-transparent, HVAC emphasized
   | 'HVAC_ONLY'    // Hide architectural walls/ceiling, show only equipment
-  | 'PLENUM';      // Focus and isolate plenum zone
+  | 'PLENUM'       // Focus and isolate plenum zone
+  | 'AIR_BALANCE'; // CFM Airflow distribution heatmap & zone balance view
 
 export type CameraPreset = 'PERSPECTIVE' | 'TOP' | 'FRONT' | 'SIDE';
 

@@ -8,7 +8,7 @@ from sqlalchemy import select
 
 from app.database import get_db
 from app.models import Equipment, EquipmentType, Room
-from app.schemas.hvac import EquipmentCreate, EquipmentUpdate, EquipmentResponse, EquipmentTypeResponse
+from app.schemas.hvac import EquipmentCreate, EquipmentUpdate, EquipmentResponse, EquipmentTypeResponse, RoomAirBalanceResponse
 from app.services.demo_service import seed_equipment_types
 from app.services.storage_service import storage_service
 
@@ -132,3 +132,45 @@ async def get_3d_model(project_id: str, filename: str):
         raise HTTPException(status_code=404, detail="3D model file not found")
     media_type = "model/gltf-binary" if filename.endswith(".glb") else "model/gltf+json"
     return FileResponse(file_path, media_type=media_type)
+
+@router.get("/projects/{project_id}/air-balance", response_model=List[RoomAirBalanceResponse])
+async def calculate_air_balance(project_id: str, db: AsyncSession = Depends(get_db)):
+    rooms_res = await db.execute(select(Room).where(Room.project_id == project_id))
+    rooms = rooms_res.scalars().all()
+
+    eq_res = await db.execute(select(Equipment).where(Equipment.project_id == project_id))
+    equipment = eq_res.scalars().all()
+
+    balances = []
+    for room in rooms:
+        # Sum supply diffusers and return grilles
+        room_eq = [e for e in equipment if e.room_id == room.id]
+        supply_cfm = sum(e.airflow_max or 150.0 for e in room_eq if "diffuser" in e.type_name.lower() or "supply" in e.type_name.lower())
+        return_cfm = sum(e.airflow_max or 150.0 for e in room_eq if "return" in e.type_name.lower() or "grille" in e.type_name.lower())
+
+        volume = room.area_sq_ft * room.ceiling_height
+        required_cfm = round((volume * 6.0) / 60.0, 1) # 6 ACH standard
+
+        net = supply_cfm - return_cfm
+        status = "BALANCED"
+        if supply_cfm > required_cfm * 1.1:
+            status = "OVER_SUPPLIED"
+        elif supply_cfm < required_cfm * 0.9:
+            status = "UNDER_SUPPLIED"
+
+        ach = round((supply_cfm * 60.0) / max(volume, 1.0), 1)
+
+        balances.append(RoomAirBalanceResponse(
+            room_id=room.id,
+            room_name=f"{room.name} {room.room_number or ''}".strip(),
+            area_sq_ft=room.area_sq_ft,
+            volume_cu_ft=volume,
+            required_cfm=required_cfm,
+            actual_supply_cfm=supply_cfm,
+            actual_return_cfm=return_cfm,
+            net_pressure_cfm=net,
+            air_changes_per_hour=ach,
+            balance_status=status
+        ))
+
+    return balances
