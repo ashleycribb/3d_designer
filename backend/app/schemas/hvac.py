@@ -18,6 +18,18 @@ class EquipmentTypeResponse(BaseModel):
     class Config:
         from_attributes = True
 
+class RoomAirBalanceResponse(BaseModel):
+    room_id: str
+    room_name: str
+    area_sq_ft: float
+    volume_cu_ft: float
+    required_cfm: float
+    actual_supply_cfm: float
+    actual_return_cfm: float
+    net_pressure_cfm: float
+    air_changes_per_hour: float
+    balance_status: str  # "BALANCED", "OVER_SUPPLIED", "UNDER_SUPPLIED"
+
 class HVACSystemBase(BaseModel):
     name: str
     system_type: str = "VAV_SYSTEM"

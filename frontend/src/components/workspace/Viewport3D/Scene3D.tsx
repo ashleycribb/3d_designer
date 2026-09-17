@@ -299,7 +299,7 @@ export const Scene3D: React.FC = () => {
         if (isXRay) {
           opacity = 0.25;
           transparent = true;
-        } else if (isPlenumFocus) {
+        } else if (isPlenumFocus || visibilityMode === 'AIR_BALANCE') {
           opacity = 0.4;
           transparent = true;
         }

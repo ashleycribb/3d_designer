@@ -17,6 +17,23 @@ class ProjectSettingsResponse(BaseModel):
     class Config:
         from_attributes = True
 
+class FloorBase(BaseModel):
+    name: str
+    floor_number: float = 1.0
+    elevation_ft: float = 0.0
+    height_ft: float = 12.0
+
+class FloorCreate(FloorBase):
+    pass
+
+class FloorResponse(FloorBase):
+    id: str
+    project_id: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
 class VerticalConfigBase(BaseModel):
     exterior_wall_height: float = 10.0
     interior_wall_height: float = 9.0

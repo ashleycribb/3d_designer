@@ -1,7 +1,7 @@
 from app.database import Base
 from app.models.project import Project, ProjectSettings, VerticalConfig
 from app.models.drawing import Drawing
-from app.models.architecture import Wall, Room, Door, Window
+from app.models.architecture import Wall, Room, Door, Window, Floor
 from app.models.hvac import EquipmentType, Equipment, HVACSystem, ControlAssociation
 
 __all__ = [
@@ -14,6 +14,7 @@ __all__ = [
     "Room",
     "Door",
     "Window",
+    "Floor",
     "EquipmentType",
     "Equipment",
     "HVACSystem",

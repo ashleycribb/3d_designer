@@ -178,6 +178,38 @@ export const LeftPanel: React.FC = () => {
 
               {expandedSections.building && (
                 <div className="tree-children">
+                  {/* Floor Selector Stack */}
+                  <div className="px-2 py-1.5 mb-1 bg-slate-900/60 rounded border border-slate-800">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center justify-between">
+                      <span>Multi-Story Floors</span>
+                      <button
+                        className="text-cyan-400 hover:text-cyan-300 font-mono text-xs"
+                        onClick={() => {
+                          const fName = prompt('Enter new floor name (e.g. Level 2, Penthouse):');
+                          if (fName && activeProject) {
+                            fetch(`/api/projects/${activeProject.id}/floors`, {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ name: fName, floor_number: 2.0, elevation_ft: 12.0, height_ft: 12.0 })
+                            });
+                          }
+                        }}
+                      >
+                        + Add
+                      </button>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between text-xs px-2 py-1 bg-cyan-950/40 border border-cyan-800/60 rounded text-cyan-200 font-semibold">
+                        <span>Roof / Mechanical Deck</span>
+                        <span className="font-mono text-[10px] text-cyan-400">24.0' AFF</span>
+                      </div>
+                      <div className="flex items-center justify-between text-xs px-2 py-1 bg-blue-950/60 border border-blue-600 rounded text-white font-bold">
+                        <span>Level 1 (Active)</span>
+                        <span className="font-mono text-[10px] text-blue-300">0.0' AFF</span>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Floor */}
                   <div className="tree-node">
                     <div 
