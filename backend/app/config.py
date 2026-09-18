@@ -17,6 +17,9 @@ class Settings(BaseSettings):
     MAX_UPLOAD_SIZE_BYTES: int = 50 * 1024 * 1024  # 50 MB
     ALLOWED_EXTENSIONS: list[str] = [".pdf", ".png", ".jpg", ".jpeg", ".glb", ".gltf"]
     
+    # Google AI Studio / Gemini Integration
+    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
+    
     # CORS
     CORS_ORIGINS: list[str] = [
         "http://localhost:5173",

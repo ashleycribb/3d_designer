@@ -103,6 +103,7 @@ interface ProjectContextType {
     crossSection: boolean;
     geometryConfirm: boolean;
     import3D: boolean;
+    aiReconstruction: boolean;
   };
   setModalOpen: React.Dispatch<React.SetStateAction<{
     newProject: boolean;
@@ -111,6 +112,7 @@ interface ProjectContextType {
     crossSection: boolean;
     geometryConfirm: boolean;
     import3D: boolean;
+    aiReconstruction: boolean;
   }>>;
   detectedGeometryData: any | null;
   setDetectedGeometryData: (data: any) => void;
@@ -285,6 +287,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     crossSection: false,
     geometryConfirm: false,
     import3D: false,
+    aiReconstruction: false,
   });
   const [detectedGeometryData, setDetectedGeometryData] = useState<any | null>(null);
 

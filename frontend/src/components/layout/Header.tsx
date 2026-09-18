@@ -192,6 +192,14 @@ export const Header: React.FC = () => {
         >
           <span className="font-mono text-xs font-bold">XS</span>
         </button>
+
+        <button
+          className="dock-btn text-cyan-400"
+          onClick={() => setModalOpen(m => ({ ...m, aiReconstruction: true }))}
+          title="Google AI Studio • AI Blueprint Reconstruction"
+        >
+          <Sparkles size={15} />
+        </button>
       </div>
 
       {/* Right Controls: 3D Camera, Visibility, Undo/Redo, Save & Demo */}

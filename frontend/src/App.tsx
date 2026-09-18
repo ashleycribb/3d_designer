@@ -14,7 +14,6 @@ import { Import3DModal } from './components/modals/Import3DModal';
 import { AIReconstructionModal } from './components/modals/AIReconstructionModal';
 
 export const App: React.FC = () => {
-  const [aiModalOpen, setAiModalOpen] = React.useState(false);
   return (
     <ProjectProvider>
       <div className="app-container">
@@ -38,7 +37,7 @@ export const App: React.FC = () => {
         <CrossSectionModal />
         <GeometryConfirmationModal />
         <Import3DModal />
-        <AIReconstructionModal isOpen={aiModalOpen} onClose={() => setAiModalOpen(false)} />
+        <AIReconstructionModal />
       </div>
     </ProjectProvider>
   );

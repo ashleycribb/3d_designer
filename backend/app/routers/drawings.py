@@ -175,9 +175,26 @@ async def ai_reconstruct_floorplan(
     project_id: str,
     drawing_id: str = None,
     confidence_threshold: float = 0.8,
+    api_key: str = None,
     db: AsyncSession = Depends(get_db)
 ):
+    # Locate drawing file path
+    query = select(Drawing).where(Drawing.project_id == project_id)
+    if drawing_id:
+        query = query.where(Drawing.id == drawing_id)
+    else:
+        query = query.where(Drawing.file_type == "floorplan").order_by(Drawing.created_at.desc())
+    res = await db.execute(query)
+    drawing = res.scalar_one_or_none()
+    drawing_path = Path(drawing.stored_path) if drawing and drawing.stored_path else None
+
     geom = await process_floorplan(project_id=project_id, drawing_id=drawing_id, db=db)
     raw_dict = geom.model_dump() if hasattr(geom, 'model_dump') else dict(geom)
-    reconstructed = ai_reconstruction_service.reconstruct_floorplan_from_pdf(raw_dict, confidence_threshold)
+
+    reconstructed = await ai_reconstruction_service.reconstruct_floorplan_from_pdf(
+        raw_geometry=raw_dict,
+        drawing_path=drawing_path,
+        confidence_threshold=confidence_threshold,
+        api_key=api_key
+    )
     return reconstructed

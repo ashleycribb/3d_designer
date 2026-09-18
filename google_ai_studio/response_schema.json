@@ -1,0 +1,67 @@
+{
+  "type": "object",
+  "properties": {
+    "project_name": {
+      "type": "string",
+      "description": "Identified building or floor title from the blueprint title block"
+    },
+    "scale_ratio": {
+      "type": "string",
+      "description": "Architectural scale if noted (e.g. 1/8\" = 1'-0\")"
+    },
+    "walls": {
+      "type": "array",
+      "description": "List of structural and partition walls",
+      "items": {
+        "type": "object",
+        "properties": {
+          "start_x": { "type": "number", "description": "Starting X coordinate in feet" },
+          "start_y": { "type": "number", "description": "Starting Y coordinate in feet" },
+          "end_x": { "type": "number", "description": "Ending X coordinate in feet" },
+          "end_y": { "type": "number", "description": "Ending Y coordinate in feet" },
+          "wall_type": { "type": "string", "enum": ["exterior", "interior"] },
+          "height": { "type": "number", "description": "Wall height in feet (e.g. 10.0)" },
+          "thickness": { "type": "number", "description": "Wall thickness in feet (e.g. 0.5)" },
+          "confidence": { "type": "number", "description": "Confidence score from 0.0 to 1.0" }
+        },
+        "required": ["start_x", "start_y", "end_x", "end_y", "wall_type", "height", "thickness"]
+      }
+    },
+    "rooms": {
+      "type": "array",
+      "description": "Identified room zones and occupancies",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Room title e.g. Office, Lab, Conference" },
+          "room_number": { "type": "string", "description": "Room identifier number" },
+          "center_x": { "type": "number", "description": "Center X coordinate in feet" },
+          "center_y": { "type": "number", "description": "Center Y coordinate in feet" },
+          "area_sq_ft": { "type": "number", "description": "Approximate room area in square feet" },
+          "ceiling_height": { "type": "number", "description": "Ceiling height AFF in feet (typically 9.0)" }
+        },
+        "required": ["name", "center_x", "center_y", "area_sq_ft"]
+      }
+    },
+    "equipment_candidates": {
+      "type": "array",
+      "description": "Detected HVAC/MEP equipment and terminal symbols",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tag": { "type": "string", "description": "Equipment tag (e.g. VAV-101, TSTAT-1)" },
+          "equipment_type_id": { 
+            "type": "string", 
+            "enum": ["VAV", "AHU", "RTU", "FCU", "DIFFUSER", "RETURN_GRILLE", "THERMOSTAT", "CHW_PUMP", "TRANSFORMER", "PANELBOARD", "SPRINKLER_PENDANT"] 
+          },
+          "x": { "type": "number", "description": "X position in feet" },
+          "y": { "type": "number", "description": "Y position in feet" },
+          "elevation": { "type": "number", "description": "Mounting elevation AFF in feet" },
+          "notes": { "type": "string" }
+        },
+        "required": ["tag", "equipment_type_id", "x", "y"]
+      }
+    }
+  },
+  "required": ["walls", "rooms"]
+}
