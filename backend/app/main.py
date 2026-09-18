@@ -62,3 +62,12 @@ async def health_check():
         "service": settings.PROJECT_NAME,
         "version": settings.VERSION
     }
+
+# Serve compiled production frontend if it exists
+FRONTEND_DIST_DIR = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
+if not FRONTEND_DIST_DIR.exists():
+    FRONTEND_DIST_DIR = Path(__file__).resolve().parent.parent / "frontend" / "dist"
+
+if FRONTEND_DIST_DIR.exists():
+    app.mount("/", StaticFiles(directory=str(FRONTEND_DIST_DIR), html=True), name="frontend_app")
+
